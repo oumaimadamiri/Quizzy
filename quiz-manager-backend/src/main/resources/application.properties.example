@@ -1,0 +1,66 @@
+server.port=8080
+server.servlet.context-path=/api
+spring.application.name=quiz-manager
+
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5433/quiz_db
+spring.datasource.username=postgres
+spring.datasource.password=${DB_PASSWORD}
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.idle-timeout=30000
+spring.datasource.hikari.connection-timeout=20000
+spring.datasource.hikari.leak-detection-threshold=2000
+
+# JPA Configuration
+spring.jpa.database=POSTGRESQL
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.properties.hibernate.jdbc.batch_size=20
+spring.jpa.properties.hibernate.order_inserts=true
+spring.jpa.properties.hibernate.order_updates=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# JWT Configuration
+jwt.secret=${JWT_SECRET}
+jwt.expiration=86400000
+jwt.refresh-expiration=604800000
+
+# Email Configuration
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=${MAIL_USERNAME}
+spring.mail.password=${MAIL_PASSWORD}
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.connectiontimeout=5000
+spring.mail.properties.mail.smtp.timeout=5000
+spring.mail.properties.mail.smtp.writetimeout=5000
+
+# Frontend URL
+app.frontend.url=http://localhost:19006
+
+# Security
+spring.security.user.name=${ADMIN_USERNAME:admin}
+spring.security.user.password=${ADMIN_PASSWORD}
+
+# CORS Configuration
+cors.allowed-origins=http://localhost:19006,http://localhost:3000,http://localhost:8081
+cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS,PATCH
+cors.allowed-headers=Origin,Content-Type,Accept,Authorization,X-Requested-With
+cors.exposed-headers=Authorization
+cors.allow-credentials=true
+cors.max-age=3600
+
+# Jackson Configuration
+spring.jackson.serialization.fail-on-empty-beans=false
+spring.jackson.default-property-inclusion=NON_NULL
+
+# Logging
+logging.level.com.quizmanager=INFO
+logging.level.org.springframework.web=INFO
+logging.level.org.hibernate.SQL=WARN
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder=WARN

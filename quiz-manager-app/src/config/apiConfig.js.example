@@ -1,0 +1,5 @@
+// Copiez ce fichier en apiConfig.js et adaptez l'URL à votre environnement.
+// Pour Android Emulator : http://10.0.2.2:8080/api
+// Pour appareil physique  : http://<votre-ip-locale>:8080/api
+// Pour iOS Simulator      : http://localhost:8080/api
+export const API_BASE_URL = 'http://localhost:8080/api';

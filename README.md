@@ -1,110 +1,219 @@
-# Quizzy : gestion de quiz sur mobile
+<p align="center">
+<img src="quiz-manager-app/assets/images/quizzy-logo.svg" alt="Logo Quizzy" width="120"/>
+</p>
 
-> Projet académique réalisé en équipe. Application mobile React Native (Expo) et API REST Spring Boot pour créer, partager et passer des quiz chronométrés, avec trois rôles : **Étudiant**, **Professeur** et **Admin**.
+<h1 align="center">📝 Quizzy</h1>
 
-## Sommaire
-1. [Fonctionnalités](#fonctionnalités)
-2. [Stack technique](#stack-technique)
-3. [Architecture](#architecture)
-4. [Prérequis](#prérequis)
-5. [Configuration](#configuration)
-6. [Installation et lancement](#installation-et-lancement)
-7. [API REST](#api-rest)
-8. [Limites connues](#limites-connues)
-9. [Auteurs](#auteurs)
+<p align="center">
+  <strong>Application mobile de gestion de quiz chronométrés</strong><br/>
+  <em>Projet académique — Master en Ingénierie des Systèmes Intelligents<br/>
+  <em>Faculté des Sciences Aïn Chock, Casablanca</em>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React%20Native-0.81-61DAFB?logo=react&logoColor=white" alt="React Native"/>
+  <img src="https://img.shields.io/badge/Expo-SDK%2054-000020?logo=expo&logoColor=white" alt="Expo"/>
+  <img src="https://img.shields.io/badge/Spring%20Boot-3.2-6DB33F?logo=springboot&logoColor=white" alt="Spring Boot"/>
+  <img src="https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white" alt="Java 21"/>
+  <img src="https://img.shields.io/badge/database-PostgreSQL-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL"/>
+  <img src="https://img.shields.io/badge/auth-JWT-000000?logo=jsonwebtokens&logoColor=white" alt="JWT"/>
+</p>
 
 ---
 
-## Fonctionnalités
+## 📋 Présentation
 
-| Rôle | Fonctionnalités |
+Quizzy est une application mobile (iOS et Android) qui permet aux professeurs de créer des quiz à choix multiples et aux étudiants de les passer avec un minuteur. Elle repose sur une API REST Spring Boot et gère trois rôles : **Étudiant**, **Professeur** et **Admin**, chacun avec ses propres écrans et ses propres droits.
+
+### Fonctionnalités Clés
+
+| Fonctionnalité | Description |
 |---|---|
-| **Étudiant** | Passer un quiz publié ou protégé par un code d'accès, avec un minuteur et une soumission automatique à la fin du temps. Consulter ses résultats, ses statistiques et le classement de chaque quiz. |
-| **Professeur** | Créer, modifier et supprimer ses quiz (QCM). Générer un quiz aléatoire à partir de la banque de questions d'une catégorie. Suivre les tentatives et les résultats de ses étudiants, et leur envoyer les résultats par email. |
-| **Admin** | Gérer les utilisateurs : rôle, statut (actif ou désactivé), suppression. Consulter la liste des professeurs. |
-| **Tous** | Inscription avec vérification de l'email, mot de passe oublié, profil, suppression du compte avec aperçu de ce qui sera supprimé. |
+| 👥 **Trois rôles** | Étudiant, Professeur et Admin, avec des droits vérifiés côté serveur |
+| ✏️ **Création de quiz** | Le professeur crée, modifie et supprime ses QCM |
+| 🎲 **Quiz aléatoire** | Génération automatique d'un quiz à partir de la banque de questions d'une catégorie |
+| 🔑 **Code d'accès** | Un quiz peut être protégé par un code partagé avec les étudiants |
+| ⏱️ **Minuteur** | Durée réglable par quiz, soumission automatique à la fin du temps |
+| 📊 **Résultats et statistiques** | Historique des tentatives, scores, statistiques par quiz et classement |
+| 📧 **Emails** | Vérification du compte, réinitialisation du mot de passe, envoi des résultats aux étudiants |
+| 🛡️ **Administration** | Gestion des utilisateurs : rôle, statut (actif ou désactivé), suppression |
 
-## Stack technique
+---
 
-| Couche | Technologies |
+## 🏗️ Architecture
+
+```text
+┌───────────────────────────┐            ┌──────────────────────────────┐
+│   Application mobile      │            │      API REST Spring Boot    │
+│   React Native (Expo)     │            │      :8080/api               │
+│                           │  HTTP +    │                              │
+│  • Écrans par rôle        │  JWT       │  • Controllers (REST)        │
+│  • AuthContext (jetons)   │◄──────────►│  • Services (logique métier) │
+│  • Services Axios         │            │  • Spring Security + JWT     │
+│  • Minuteur de quiz       │            │  • Spring Data JPA           │
+└───────────────────────────┘            └───────┬──────────────┬───────┘
+                                                 │              │
+                                         ┌───────▼──────┐ ┌─────▼──────────┐
+                                         │  PostgreSQL  │ │   SMTP Gmail   │
+                                         │   quiz_db    │ │ (vérification, │
+                                         └──────────────┘ │  résultats)    │
+                                                          └────────────────┘
+```
+
+### Technologies Utilisées
+
+| Couche | Technologie |
 |---|---|
-| Mobile | React Native 0.81, Expo SDK 54, React Navigation 7, Axios |
-| Backend | Java 21, Spring Boot 3.2 (Web, Security, Data JPA, Mail), ModelMapper |
+| Application mobile | React Native 0.81, Expo SDK 54, React Navigation 7, Axios |
+| API | Java 21, Spring Boot 3.2 (Web, Security, Data JPA, Mail), ModelMapper |
 | Authentification | JWT : jeton d'accès et jeton de rafraîchissement |
 | Base de données | PostgreSQL |
-| Email | SMTP Gmail (vérification du compte, réinitialisation du mot de passe, résultats) |
+| Emails | SMTP Gmail |
 
-## Architecture
+---
 
-```
+## 📁 Structure du Projet
+
+```text
 Quizzy/
-├── quiz-manager-app/            Application mobile (React Native / Expo)
+├── quiz-manager-app/                 # Application mobile (React Native / Expo)
+│   ├── App.js                        # Point d'entrée
 │   └── src/
-│       ├── screens/             Écrans : connexion, tableaux de bord, passage de quiz, résultats…
-│       ├── components/          QuizCard, QuestionForm, AccessCodeModal…
-│       ├── services/            Appels à l'API (Axios)
-│       ├── context/             AuthContext : stockage et rafraîchissement du jeton
-│       ├── navigation/          Navigation par rôle
-│       └── utils/               Génération de quiz aléatoires
-└── quiz-manager-backend/        API REST (Spring Boot)
-    └── src/main/java/com/quizmanager/
-        ├── controller/          Routes REST
-        ├── service/             Logique métier
-        ├── repository/          Accès aux données (Spring Data JPA)
-        ├── model/               Entités : User, Quiz, Question, Option, QuizAttempt, UserAnswer
-        ├── dto/                 Objets échangés avec l'application
-        └── config/              Sécurité, CORS, filtre JWT
+│       ├── screens/                  # Écrans (connexion, tableaux de bord, passage, résultats…)
+│       ├── components/               # QuizCard, QuestionForm, AccessCodeModal, QuizzyLogo
+│       ├── services/                 # api.js, authService.js, userService.js (Axios)
+│       ├── context/                  # AuthContext : stockage et rafraîchissement du jeton
+│       ├── navigation/               # Navigation selon le rôle
+│       ├── utils/                    # quizGenerator.js
+│       └── config/                   # apiConfig.js (adresse du backend)
+│
+├── quiz-manager-backend/             # API REST (Spring Boot)
+│   └── src/main/java/com/quizmanager/
+│       ├── controller/               # Auth, Quiz, Question, QuizAttempt, User, Email
+│       ├── service/                  # Logique métier
+│       ├── repository/               # Accès aux données (Spring Data JPA)
+│       ├── model/                    # Entités JPA
+│       ├── dto/                      # Objets échangés avec l'application
+│       ├── exception/                # Gestion des erreurs
+│       └── config/                   # Sécurité, CORS, filtre JWT
+│
+└── README.md
 ```
 
-## Prérequis
+---
+
+## 📦 Prérequis
 
 | Outil | Version |
 |---|---|
 | JDK | 21 (Maven est fourni : `./mvnw`) |
 | PostgreSQL | 14 ou plus |
 | Node.js | 20 ou plus |
-| Téléphone avec **Expo Go**, ou émulateur Android / iOS | |
+| Téléphone avec **Expo Go**, ou émulateur Android / iOS | — |
+| Compte Gmail avec « mot de passe d'application » | Envoi des emails |
 
-## Configuration
+---
 
-### Backend
-Copier `quiz-manager-backend/src/main/resources/application.properties.example` vers `application.properties`. Les secrets sont lus dans des variables d'environnement :
+## 🚀 Installation
+
+### 1. Cloner le dépôt
+
+```bash
+git clone https://github.com/oumaimadamiri/Quizzy.git
+cd Quizzy
+```
+
+### 2. Créer la base de données
+
+```bash
+psql -U postgres -c "CREATE DATABASE quiz_db;"
+```
+
+> Le fichier d'exemple utilise PostgreSQL sur le port **5433**. Si votre PostgreSQL écoute sur 5432, modifiez `spring.datasource.url`.
+
+### 3. Configurer le backend
+
+```bash
+cd quiz-manager-backend
+cp src/main/resources/application.properties.example src/main/resources/application.properties
+```
+
+Les secrets sont lus dans des variables d'environnement :
 
 | Variable | Description |
 |---|---|
 | `DB_PASSWORD` | Mot de passe PostgreSQL |
-| `JWT_SECRET` | Clé de signature des jetons (générer avec `openssl rand -hex 32`) |
+| `JWT_SECRET` | Clé de signature des jetons (`openssl rand -hex 32`) |
 | `MAIL_USERNAME` | Adresse Gmail d'envoi |
 | `MAIL_PASSWORD` | Mot de passe d'application Google |
 | `ADMIN_USERNAME` | Identifiant du compte admin (défaut : `admin`) |
 | `ADMIN_PASSWORD` | Mot de passe du compte admin |
 
-> Le fichier d'exemple utilise PostgreSQL sur le port **5433**. Si votre PostgreSQL écoute sur 5432, adaptez `spring.datasource.url`.
-
-### Mobile
-Copier `quiz-manager-app/src/config/apiConfig.js.example` vers `apiConfig.js` et y mettre l'adresse du backend. Sur un téléphone physique, utilisez l'IP du PC (`http://<IP>:8080/api`), pas `localhost`.
-
-## Installation et lancement
+### 4. Lancer l'API
 
 ```bash
-# 1. Base de données
-psql -U postgres -c "CREATE DATABASE quiz_db;"
-
-# 2. Backend : API sur http://localhost:8080/api
-cd quiz-manager-backend
-cp src/main/resources/application.properties.example src/main/resources/application.properties
 ./mvnw spring-boot:run
+```
 
-# 3. Application mobile (autre terminal)
-cd quiz-manager-app
+L'API est disponible sur `http://localhost:8080/api`. Les tables sont créées au démarrage.
+
+### 5. Lancer l'application mobile
+
+```bash
+cd ../quiz-manager-app
 npm install
-cp src/config/apiConfig.js.example src/config/apiConfig.js
+cp src/config/apiConfig.js.example src/config/apiConfig.js   # puis mettre l'adresse du backend
 npx expo start
 ```
 
-Scanner le QR code avec Expo Go, ou appuyer sur `a` (Android) ou `i` (iOS) pour ouvrir un émulateur.
+Scannez le QR code avec Expo Go. Sur un téléphone physique, l'adresse du backend doit être l'IP du PC (`http://<IP_DU_PC>:8080/api`), pas `localhost`.
 
-## API REST
+---
+
+## 🔄 Fonctionnement
+
+### Inscription et connexion
+```text
+Inscription → Email de vérification → Lien / code validé → Compte actif
+Connexion   → Jeton d'accès + jeton de rafraîchissement (JWT)
+  └─ Jeton expiré → rafraîchissement automatique (/auth/refresh-token)
+```
+
+### Passage d'un quiz
+```text
+L'étudiant choisit un quiz
+  ├─ 🔑 Quiz protégé → saisie du code d'accès → vérification
+  └─ Questions chargées → ⏱️ minuteur lancé
+        ├─ ✅ Soumission par l'étudiant → correction automatique → score enregistré
+        └─ ⌛ Temps écoulé            → soumission automatique → score enregistré
+→ Résultat, statistiques et classement mis à jour
+```
+
+### Côté professeur
+```text
+Création du quiz (questions et options, ou génération aléatoire)
+  → Publication (avec ou sans code d'accès)
+  → Suivi des tentatives de ses étudiants → envoi des résultats par email
+```
+
+---
+
+## 📱 Écrans
+
+| Écran | Rôle | Description |
+|---|---|---|
+| **Connexion / Inscription** | Tous | Création de compte, vérification de l'email, mot de passe oublié |
+| **Accueil / Liste des quiz** | Étudiant | Quiz publiés, recherche, accès par code |
+| **Passage du quiz** | Étudiant | Questions, minuteur, soumission |
+| **Résultats** | Étudiant | Score, historique et statistiques |
+| **Tableau de bord professeur** | Professeur | Ses quiz, résultats de ses étudiants |
+| **Éditeur de quiz** | Professeur | Création et modification des questions |
+| **Tableau de bord admin** | Admin | Gestion des utilisateurs et des rôles |
+| **Profil** | Tous | Modification du profil, suppression du compte |
+
+---
+
+## 🔌 API REST
 
 Toutes les routes sont préfixées par `/api`. Sauf pour `/auth`, elles demandent l'en-tête `Authorization: Bearer <jeton>`.
 
@@ -112,20 +221,35 @@ Toutes les routes sont préfixées par `/api`. Sauf pour `/auth`, elles demanden
 |---|---|
 | Authentification | `POST /auth/register`, `/auth/login`, `/auth/refresh-token`, `/auth/verify-email`, `/auth/resend-verification`, `/auth/forgot-password`, `/auth/reset-password` |
 | Quiz | `GET /quizzes`, `/quizzes/published`, `/quizzes/search`, `/quizzes/{id}` · `POST /quizzes` · `PUT` et `DELETE /quizzes/{id}` · `POST /quizzes/generate-random` |
-| Passage d'un quiz | `POST /quizzes/{id}/verify-access-code` · `GET /quizzes/{id}/take` · `POST /quizzes/{id}/submit` |
+| Passage | `POST /quizzes/{id}/verify-access-code` · `GET /quizzes/{id}/take` · `POST /quizzes/{id}/submit` |
 | Questions | `GET /questions/quiz/{quizId}`, `/questions/category/{category}`, `/questions/random/{category}` |
 | Résultats | `GET /attempts/user/{userId}`, `/attempts/user/{userId}/statistics`, `/attempts/quiz/{quizId}/leaderboard`, `/quizzes/{id}/statistics` |
 | Professeur | `GET /quizzes/mine`, `/quizzes/professor/{professorId}/students-results`, `/users/students` · `POST /emails/bulk/quiz-results` |
 | Compte | `GET`, `PUT` et `DELETE /users/me` · `GET /users/me/deletion-impact` |
 | Admin | `GET /users`, `/users/professors` · `PUT /users/{id}/role`, `/users/{id}/status` · `DELETE /users/{id}` |
 
-Les droits sont vérifiés côté serveur (`@PreAuthorize`) : seuls les professeurs et les admins peuvent créer ou supprimer un quiz et consulter les résultats des étudiants.
+---
 
-## Limites connues
+## 🗄️ Schéma de la Base de Données
+
+| Table | Description |
+|---|---|
+| `User` | Compte utilisateur, rôle (Étudiant, Professeur, Admin), statut et vérification de l'email |
+| `Quiz` | Quiz créé par un professeur : titre, catégorie, durée, code d'accès, publication |
+| `Question` | Question d'un quiz |
+| `Option` | Réponse possible d'une question (correcte ou non) |
+| `QuizAttempt` | Tentative d'un étudiant : date, score, durée |
+| `UserAnswer` | Réponse choisie par l'étudiant pour chaque question d'une tentative |
+
+---
+
+## ⚠️ Limites Connues
 
 - **Tests** : seul le test de démarrage de Spring existe. Il n'y a pas de tests métier ni de tests côté mobile.
-- **Schéma de base** géré par Hibernate (`ddl-auto=update`), sans outil de migration (Flyway ou Liquibase).
+- **Schéma de base** géré par Hibernate (`ddl-auto=update`), sans migrations (Flyway ou Liquibase).
 - **Pas de limite de débit** sur la connexion et l'envoi d'emails.
+
+---
 
 ## Auteurs
 
@@ -136,3 +260,11 @@ Les droits sont vérifiés côté serveur (`@PreAuthorize`) : seuls les professe
 | **KAWTAR ELHAMRAOUI** | Développeuse Full-Stack |
 
 **Superviseur :** Pr. EL KASMI ALAOUI Seddiq
+
+---
+
+<p align="center">
+  Faculté des Sciences Aïn Chock, Casablanca
+</p>
+
+

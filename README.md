@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Application mobile de gestion de quiz chronométrés</strong><br/>
-  <em>Projet académique — Master en Ingénierie des Systèmes Intelligents<br/>
+  <em>Projet académique — Master en Ingénierie des Systèmes Intelligents</em><br/>
   <em>Faculté des Sciences Aïn Chock, Casablanca</em>
 </p>
 
@@ -251,13 +251,13 @@ Toutes les routes sont préfixées par `/api`. Sauf pour `/auth`, elles demanden
 
 ---
 
-## Auteurs
+## 👥 Auteurs
 
 | Nom | Rôle |
 |---|---|
 | **Oumaima Damiri** | Développeuse Full-Stack & IoT |
-| **Jihane EL Berkaoui** | Développeuse Full-Stack |
-| **KAWTAR ELHAMRAOUI** | Développeuse Full-Stack |
+| **Jihane El Berkaoui** | Développeuse Full-Stack |
+| **KAWTAR Elhamraoui** | Développeuse Full-Stack |
 
 **Superviseur :** Pr. EL KASMI ALAOUI Seddiq
 
